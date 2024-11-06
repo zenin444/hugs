@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Hugging Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ffdee9, #b5fffc);
+            overflow: hidden;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            position: relative;
+        }
+        .character {
+            position: relative;
+            display: inline-block;
+            width: 130px;
+            height: 100px;
+            border-radius: 50px;
+            background-color: #ff9aa2;
+            box-shadow: 0 0 15px 5px rgba(255, 154, 162, 0.5);
+            animation: sway 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+        .hugger, .huggee {
+            animation: bounce 0.5s ease-in-out infinite;
+        }
+        .hugger.nuzzle, .huggee.nuzzle {
+            animation: nuzzle 2s ease-in-out forwards;
+        }
+        .arm {
+            width: 20px;
+            height: 5px;
+            background-color: #ff9aa2;
+            position: absolute;
+            border-radius: 5px;
+        }
+        .arm.left {
+            left: -15px;
+            top: 40px;
+            transform-origin: right;
+            animation: swayArm 3s ease-in-out infinite;
+        }
+        .arm.right {
+            right: -15px;
+            top: 40px;
+            transform-origin: left;
+            animation: swayArm 3s ease-in-out infinite;
+        }
+        .face {
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+        }
+        .eye.left {
+            left: 5px;
+        }
+        .eye.right {
+            right: 5px;
+        }
+        .mouth {
+            width: 15px;
+            height: 5px;
+            border-radius: 0 0 50px 50px;
+            border: 2px solid #000;
+            border-top: none;
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .mouth.smile {
+            border-top: 2px solid #000;
+            border-bottom: none;
+        }
+        .heart {
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            background-color: transparent;
+            animation: growHeart 1s ease-in-out forwards;
+        }
+        .heart::before, .heart::after {
+            content: "";
+            width: 15px;
+            height: 25px;
+            background-color: #e57373;
+            border-radius: 15px 15px 0 0;
+            position: absolute;
+            top: 0;
+        }
+        .heart::before {
+            left: -7.5px;
+            transform: rotate(-45deg);
+        }
+        .heart::after {
+            right: -7.5px;
+            transform: rotate(45deg);
+        }
+        @keyframes sway {
+            0%, 100% { transform: rotate(2deg); }
+            50% { transform: rotate(-2deg); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes nuzzle {
+            0% { transform: translate(0); }
+            100% { transform: translate(-10px, -5px) rotate(-5deg); }
+        }
+        @keyframes swayArm {
+            0%, 100% { transform: rotate(0); }
+            50% { transform: rotate(5deg); }
+        }
+        @keyframes growHeart {
+            0% {
+                transform: translateX(-50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+        }
+        .cloud {
+            width: 100px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50px;
+            position: absolute;
+            top: 10%;
+            animation: moveClouds 15s linear infinite;
+            opacity: 0.8;
+        }
+        .cloud::after, .cloud::before {
+            content: '';
+            position: absolute;
+            background: #fff;
+            width: 80px;
+            height: 60px;
+            border-radius: 50px;
+        }
+        .cloud::after {
+            top: -30px;
+            left: 10px;
+        }
+        .cloud::before {
+            top: -20px;
+            left: 50px;
+        }
+        @keyframes moveClouds {
+            0% { left: -150px; }
+            100% { left: 100%; }
+        }
+        .sparkle {
+            width: 5px;
+            height: 5px;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: sparkle 1s forwards;
+        }
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .snowflake {
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        #container {
+        padding-left: 100px;
+        }
+
+        /* basic styles for black background and crosshair cursor */
+        canvas {
+          cursor: crosshair;
+          display: block;
+        }
+        
+        #fly {
+          color: #151515;
+          margin-left: 190px;
+          margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud"></div>
+    <div class="cloud" style="top: 30%; animation-delay: 5s;"></div>
+    <div class="cloud" style="top: 45%; animation-delay: 15s;"></div>
+    <div class="cloud" style="top: 60%; animation-delay: 20s;"></div>
+    <div class="cloud" style="top: 75%; animation-delay: 25s;"></div>
+    <div class="cloud" style="top: 90%; animation-delay: 30s;"></div>
+    <div class="cloud" style="top: 105%; animation-delay: 35s;"></div>
+    <div class="cloud" style="top: 120%; animation-delay: 40s;"></div>
+    <div class="character hugger" onclick="triggerHug()">
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="face eye left"></div>
+        <div class="face eye right"></div>
+        <div class="mouth"></div>
+    </div>
+    <div class="character huggee" onclick="triggerHug()">
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="face eye left"></div>
+        <div class="face eye right"></div>
+        <div class="mouth"></div>
+    </div>
+    <h2 id="fly">Hello pretty boy ,this is a virtual hug hehe i just wanted to tell you that you've got this,and i believe in you and don't forget that i'm here for you No matter what happens, you’re not alone and i'm so proud of you and proud of how far you've come ,te amo monkey :3  </h2>
+    <script>
+            // Create multiple hearts
+            const heartsCount = 10; // Number of hearts to create
+            for (let i = 0; i < heartsCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animation = `growHeart 1s ease-in-out forwards`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 2000);
+            }
+
+            const hugger = document.querySelector('.hugger');
+            const huggee = document.querySelector('.huggee');
+            hugger.classList.add('nuzzle');
+            huggee.classList.add('nuzzle');
+
+            const mouths = document.querySelectorAll('.mouth');
+            mouths.forEach(mouth => {
+                mouth.classList.add('smile');
+            });
+
+            // Create a floating sparkle effect
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = `${Math.random() * 100}vw`;
+                sparkle.style.top = `${Math.random() * 100}vh`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+
+            message = document.getElementById("fly").innerHTML;
+            distance = 100;
+            // You can make the text fly faster by reducing the speed below
+
+            speed = 50; 
+
+            var txt="",
+            num=0,
+            num4=0,
+            flyofle="",
+            flyofwi="",
+            flyofto="",
+            fly=document.getElementById("fly");
+
+
+            function stfly() {
+            for(i=0;i != message.length;i++) {
+              if(message.charAt(i) != "$")
+              txt += "<span style='position:relative;visibility:hidden;' id='n"+i+"'>"+message.charAt(i)+"</span>";
+              else
+              txt += "<br>";
+            }
+            fly.innerHTML = txt;
+            txt = "";
+            flyofle = fly.offsetLeft;
+            flyofwi = fly.offsetWidth;
+            flyofto = fly.offsetTop;
+            fly2b();
+            }
+
+            function fly2b() {
+            if(num4 != message.length) {
+              if(message.charAt(num4) != "$") {
+              var then = document.getElementById("n" + num4);
+              then.style.left = flyofle - then.offsetLeft + flyofwi / 2 + 'px';
+              then.style.top = flyofto - then.offsetTop + distance + 'px';
+              fly3(then.id, parseInt(then.style.left), parseInt(then.style.left) / 5, parseInt(then.style.top), parseInt(then.style.top) / 5);
+              }
+              num4++;
+              setTimeout("fly2b()", speed);
+            }
+            }
+
+            function fly3(target,lef2,num2,top2,num3) {
+            if((Math.floor(top2) != 0 && Math.floor(top2) != -1) || (Math.floor(lef2) != 0 && Math.floor(lef2) != -1)) {
+              if(lef2 >= 0)
+              lef2 -= num2;
+              else
+              lef2 += num2 * -1;
+              if(Math.floor(lef2) != -1) {
+              document.getElementById(target).style.visibility = "visible";
+              document.getElementById(target).style.left = Math.floor(lef2) + 'px';
+              } else {
+              document.getElementById(target).style.visibility = "visible";
+              document.getElementById(target).style.left = Math.floor(lef2 + 1) + 'px';
+              }
+              if(lef2 >= 0)
+              top2 -= num3
+              else
+            top2 += num3 * -1;
+              if(Math.floor(top2) != -1)
+              document.getElementById(target).style.top = Math.floor(top2) + 'px';
+              else
+              document.getElementById(target).style.top = Math.floor(top2 + 1) + 'px';
+              setTimeout("fly3('"+target+"',"+lef2+","+num2+","+top2+","+num3+")",50)
+            }
+            }
+
+            stfly()
+
+        // Create snowflakes falling from the top
+        function createSnowflakes() {
+            const snowflakeCount = 50; // Number of snowflakes
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.left = `${Math.random}
+            
+
+
+
+
